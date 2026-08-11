@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fadhil — Fullstack Developer & AI Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf9f6;
+    --paper-dim:#f2f1ec;
+    --ink:#1c1b19;
+    --ink-soft:#5a5852;
+    --line:#e1dfd8;
+    --accent:#2f4b8f;
+    --accent-soft:#5b74ad;
+    --ok:#3a8a5c;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Newsreader', serif;
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.01em;
+  }
+
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--accent);color:var(--paper);}
+
+  /* ---------- layout helpers ---------- */
+  .wrap{max-width:1040px;margin:0 auto;padding:0 32px;}
+  section{padding:120px 0;border-bottom:1px solid var(--line);}
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{content:"//";color:var(--accent-soft);}
+
+  .section-title{font-size:clamp(28px,4vw,40px);margin-bottom:48px;}
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{transition:none;opacity:1;transform:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,249,246,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{display:flex;align-items:center;justify-content:space-between;height:76px;}
+  .logo{font-family:'JetBrains Mono', monospace;font-size:17px;font-weight:500;}
+  .logo span{color:var(--accent);}
+
+  .nav-links{display:flex;gap:36px;list-style:none;}
+  .nav-links a{font-size:14px;color:var(--ink-soft);position:relative;padding:4px 0;transition:color .2s ease;}
+  .nav-links a:hover, .nav-links a.active{color:var(--ink);}
+  .nav-links a.active::after{content:"";position:absolute;left:0;bottom:-4px;width:100%;height:1px;background:var(--accent);}
+
+  .burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .burger span{width:22px;height:1.5px;background:var(--ink);display:block;transition:transform .25s ease, opacity .25s ease;}
+  .burger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+  .burger.open span:nth-child(2){opacity:0;}
+  .burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+
+  /* ---------- hero ---------- */
+  #home{padding-top:90px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:center;}
+  .hero-copy .role{font-size:13.5px;color:var(--ink-soft);margin-bottom:14px;}
+  .hero-copy h1{font-size:clamp(38px,6vw,60px);line-height:1.08;margin-bottom:22px;}
+  .hero-copy h1 em{font-style:italic;color:var(--accent);}
+  .hero-copy p{max-width:48ch;color:var(--ink-soft);font-size:16px;margin-bottom:34px;}
+
+  .btn-row{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;font-size:14px;font-weight:500;border-radius:2px;transition:all .2s ease;border:1px solid var(--ink);}
+  .btn-solid{background:var(--ink);color:var(--paper);}
+  .btn-solid:hover{background:var(--accent);border-color:var(--accent);}
+  .btn-outline{border-color:var(--line);color:var(--ink);}
+  .btn-outline:hover{border-color:var(--ink);}
+
+  /* terminal-window photo frame — signature element */
+  .terminal{
+    position:relative;
+    max-width:360px;
+    margin-left:auto;
+    border:1px solid var(--line);
+    background:#fff;
+    box-shadow:0 1px 0 var(--line);
+  }
+  .terminal-bar{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:10px 12px;
+    border-bottom:1px solid var(--line);
+    background:var(--paper-dim);
+  }
+  .terminal-bar .tdot{width:8px;height:8px;border-radius:50%;background:var(--line);}
+  .terminal-bar .tdot:nth-child(1){background:#e4a2a2;}
+  .terminal-bar .tdot:nth-child(2){background:#e4d4a2;}
+  .terminal-bar .tdot:nth-child(3){background:#a2e4b8;}
+  .terminal-bar .tpath{
+    margin-left:auto;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color:var(--ink-soft);
+  }
+  .terminal-body{position:relative;aspect-ratio:4/5;overflow:hidden;}
+  .terminal-body img{width:100%;height:100%;object-fit:cover;filter:grayscale(30%) contrast(1.03);display:block;}
+  .terminal-footer{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 12px;
+    border-top:1px solid var(--line);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .terminal-footer .cursor{
+    width:7px;height:14px;
+    background:var(--accent);
+    display:inline-block;
+    animation:blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink{0%,50%{opacity:1;}50.01%,100%{opacity:0;}}
+  @media (prefers-reduced-motion: reduce){
+    .terminal-footer .cursor{animation:none;}
+  }
+
+  /* ---------- tentang ---------- */
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;}
+  .about-grid p{color:var(--ink-soft);margin-bottom:16px;font-size:15.5px;}
+
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:22px 28px;}
+  .fact-label{font-family:'JetBrains Mono', monospace;font-size:11px;color:var(--ink-soft);margin-bottom:6px;}
+  .fact-value{font-size:16px;}
+
+  .hobi-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .hobi-tags span{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    border:1px solid var(--line);
+    padding:6px 12px;
+    border-radius:3px;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- pendidikan (timeline) ---------- */
+  .timeline{position:relative;padding-left:28px;border-left:1px solid var(--line);}
+  .t-item{position:relative;padding-bottom:44px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-item::before{
+    content:"";position:absolute;left:-33px;top:4px;
+    width:9px;height:9px;border-radius:50%;
+    background:var(--paper);border:1.5px solid var(--accent);
+  }
+  .t-year{font-family:'JetBrains Mono', monospace;font-size:12px;color:var(--accent);margin-bottom:6px;}
+  .t-item h3{font-size:20px;margin-bottom:6px;}
+  .t-item p{color:var(--ink-soft);font-size:14.5px;max-width:56ch;}
+
+  /* ---------- keahlian ---------- */
+  .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;}
+  .skill-cat h3{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:20px;
+    font-weight:500;
+  }
+  .skill-row{margin-bottom:16px;}
+  .skill-row .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:7px;}
+  .skill-row .top span:last-child{font-family:'JetBrains Mono', monospace;font-size:12px;color:var(--ink-soft);}
+  .skill-track{height:3px;background:var(--line);position:relative;}
+  .skill-fill{position:absolute;left:0;top:0;height:100%;background:var(--accent);width:0%;transition:width 1s ease;}
+
+  .stack-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;}
+  .stack-tags span{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    background:var(--paper-dim);
+    border:1px solid var(--line);
+    padding:6px 11px;
+    border-radius:3px;
+  }
+
+  /* ---------- proyek ---------- */
+  .project-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:36px 32px;
+  }
+  .project{
+    border:1px solid var(--line);
+    background:#fff;
+    transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .project:hover{
+    transform:translateY(-3px);
+    border-color:var(--accent-soft);
+    box-shadow:0 10px 24px -16px rgba(28,27,25,0.35);
+  }
+  .project .p-thumb{
+    position:relative;
+    aspect-ratio:16/10;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .project .p-thumb img{
+    width:100%;height:100%;object-fit:cover;
+    filter:grayscale(20%) contrast(1.02);
+    display:block;
+    transition:filter .3s ease, transform .4s ease;
+  }
+  .project:hover .p-thumb img{
+    filter:grayscale(0%) contrast(1.02);
+    transform:scale(1.03);
+  }
+  .project .p-year{
+    position:absolute;
+    top:12px;left:12px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:#fff;
+    background:rgba(28,27,25,0.6);
+    padding:4px 9px;
+    border-radius:2px;
+  }
+  .project .p-body{padding:22px 22px 24px;}
+  .project h3{font-size:19px;margin-bottom:8px;}
+  .project p{color:var(--ink-soft);font-size:14.5px;margin-bottom:16px;}
+  .project .p-stack{
+    display:flex;flex-wrap:wrap;gap:6px;
+  }
+  .project .p-stack span{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--accent);
+    border:1px solid var(--line);
+    padding:3px 8px;
+    border-radius:2px;
+  }
+
+  /* ---------- kontak ---------- */
+  #kontak{border-bottom:none;}
+  .contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+  .contact-wrap h2{margin-bottom:20px;}
+  .contact-wrap p{color:var(--ink-soft);max-width:44ch;margin-bottom:28px;}
+
+  .email-copy{
+    display:inline-flex;align-items:center;gap:12px;
+    border:1px solid var(--ink);padding:14px 18px;cursor:pointer;
+    background:none;font-family:'JetBrains Mono', monospace;font-size:14.5px;color:var(--ink);
+    transition:background .2s ease,color .2s ease;
+  }
+  .email-copy:hover{background:var(--ink);color:var(--paper);}
+  .copy-note{font-family:'JetBrains Mono', monospace;font-size:12px;color:var(--ok);margin-top:10px;opacity:0;transition:opacity .3s ease;}
+  .copy-note.show{opacity:1;}
+
+  .social-list{list-style:none;}
+  .social-list li{border-top:1px solid var(--line);}
+  .social-list li:last-child{border-bottom:1px solid var(--line);}
+  .social-list a{display:flex;align-items:center;justify-content:space-between;padding:16px 4px;font-size:15px;}
+  .social-list a:hover{color:var(--accent);}
+  .social-list svg{width:15px;height:15px;opacity:.6;}
+
+  footer{padding:28px 0;font-size:12.5px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  footer .mono{font-family:'JetBrains Mono', monospace;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:860px){
+    .nav-links{
+      position:fixed;top:76px;left:0;right:0;background:var(--paper);
+      flex-direction:column;gap:0;max-height:0;overflow:hidden;
+      transition:max-height .3s ease;border-bottom:1px solid var(--line);
+    }
+    .nav-links.open{max-height:360px;}
+    .nav-links li{width:100%;}
+    .nav-links a{display:block;padding:16px 32px;border-top:1px solid var(--line);}
+    .burger{display:flex;}
+
+    #home{grid-template-columns:1fr;padding-top:56px;}
+    .terminal{margin:0 auto;max-width:300px;order:-1;}
+    .about-grid{grid-template-columns:1fr;gap:36px;}
+    .skills-grid{grid-template-columns:1fr;gap:32px;}
+    .contact-wrap{grid-template-columns:1fr;gap:40px;}
+    .project-grid{grid-template-columns:1fr;gap:28px;}
+    section{padding:76px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a href="#home" class="logo">codefadhil<span>.my.id</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" class="nav-link">Home</a></li>
+      <li><a href="#tentang" class="nav-link">Tentang Saya</a></li>
+      <li><a href="#pendidikan" class="nav-link">Pendidikan</a></li>
+      <li><a href="#keahlian" class="nav-link">Keahlian</a></li>
+      <li><a href="#proyek" class="nav-link">Proyek</a></li>
+      <li><a href="#kontak" class="nav-link">Kontak</a></li>
+    </ul>
+    <button class="burger" id="burger" aria-label="Buka menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ HOME ============ -->
+  <section id="home">
+    <div class="hero-copy">
+      <p class="role mono">FULLSTACK DEVELOPER — AI ENGINEER</p>
+      <h1>Membangun produk dari <em>ide</em> sampai jadi sistem yang jalan.</h1>
+      <p>
+        Nama saya <strong>R. Achmad Fadhil I'tishom</strong>, siswa kelas <strong>XI SIJA 2</strong>
+        jurusan <strong>SIJA</strong>. Saya fokus membangun aplikasi web fullstack
+        dan mengeksplorasi integrasi AI ke dalam produk nyata — mulai dari desain
+        arsitektur, backend, sampai model AI yang benar-benar dipakai pengguna.
+      </p>
+      <div class="btn-row">
+        <a href="#proyek" class="btn btn-solid">Lihat Proyek</a>
+        <a href="#kontak" class="btn btn-outline">Hubungi Saya</a>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
+        <span class="tpath">~/profil</span>
+      </div>
+      <div class="terminal-body">
+        <img src="foto1.jpg" alt="Foto profil [Nama Lengkap]"
+             onerror="this.src='https://placehold.co/480x600/1c1b19/faf9f6?text=Foto+Profil'">
+      </div>
+      <div class="terminal-footer">
+        <span>root@fadhil:~$ whoami</span><span class="cursor"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TENTANG SAYA ============ -->
+  <section id="tentang" class="reveal">
+    <p class="eyebrow">Tentang Saya</p>
+    <h2 class="section-title">Sedikit lebih dalam.</h2>
+
+    <div class="about-grid">
+      <div>
+        <p>
+          Saya adalah pelajar SMA di Jawa Timur yang menaruh minat besar pada
+          pengembangan perangkat lunak, khususnya membangun aplikasi web dari nol
+          hingga rilis. Saya suka memikirkan bagaimana sebuah sistem disusun —
+          dari struktur database, alur API, sampai bagaimana AI bisa membuat produk
+          terasa lebih pintar bagi penggunanya.
+        </p>
+        <p>
+          Salah satu proyek yang sedang saya kembangkan adalah platform
+          <em>web-to-print</em> yang mengintegrasikan AI image generation, editor
+          desain berbasis browser, penentuan harga otomatis, dan checkout via
+          WhatsApp. Saya juga membangun beberapa proyek fullstack pribadi
+          menggunakan Next.js dan Supabase untuk memperdalam pemahaman arsitektur
+          end-to-end.
+        </p>
+        <div class="hobi-tags">
+          <span>Fullstack Development</span>
+          <span>Eksperimen AI/LLM</span>
+          <span>Arsitektur Sistem</span>
+          <span>UI/UX Engineering</span>
+          <span>Open Source</span>
+        </div>
+      </div>
+
+      <div class="facts">
+        <div>
+          <div class="fact-label">nama</div>
+          <div class="fact-value">R. Achmad fadhil I'tishom</div>
+        </div>
+        <div>
+          <div class="fact-label">kelas</div>
+          <div class="fact-value">XI SIJA 2</div>
+        </div>
+        <div>
+          <div class="fact-label">jurusan</div>
+          <div class="fact-value">SIJA</div>
+        </div>
+        <div>
+          <div class="fact-label">lokasi</div>
+          <div class="fact-value">Jawa Timur, Indonesia</div>
+        </div>
+        <div>
+          <div class="fact-label">fokus</div>
+          <div class="fact-value">Fullstack & AI Engineering</div>
+        </div>
+        <div>
+          <div class="fact-label">email</div>
+          <div class="fact-value">achmadfadhilithisom@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PENDIDIKAN ============ -->
+  <section id="pendidikan" class="reveal">
+    <p class="eyebrow">Pendidikan</p>
+    <h2 class="section-title">Riwayat belajar.</h2>
+
+    <div class="timeline">
+      <div class="t-item">
+        <div class="t-year mono">2025 — Sekarang</div>
+        <h3>SMK Telkom Sidoarjo — SIJA</h3>
+        <p>Kelas XI. Belajar mandiri pengembangan web dan dasar-dasar AI di
+           luar kurikulum sekolah, sambil aktif membangun proyek pribadi sebagai
+           bahan portofolio.</p>
+      </div>
+      <div class="t-item">
+        <div class="t-year mono">2022 — 2025</div>
+        <h3>PKBM IBADURRAHMAN</h3>
+        <p>sekolah dengan base di agama dan tahfidz</p>
+      </div>
+      <div class="t-item">
+        <div class="t-year mono">Sertifikat & Kursus</div>
+        <h3>DBS Coding Camp by Dicoding 2026</h3>
+        <p>kelas online bersama di coding selama 6 bulan yang fokus mempeljari terkait Fullstack development dan dasar AI</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KEAHLIAN ============ -->
+  <section id="keahlian" class="reveal">
+    <p class="eyebrow">Keahlian</p>
+    <h2 class="section-title">Alat dan kemampuan.</h2>
+
+    <div class="skills-grid">
+      <div class="skill-cat">
+        <h3>Frontend</h3>
+        <div class="skill-row" data-level="85">
+          <div class="top"><span>React / Next.js</span><span>85%</span></div>
+          <div class="skill-track"><div class="skill-fill"></div></div>
+        </div>
+        <div class="skill-row" data-level="80">
+          <div class="top"><span>Tailwind CSS</span><span>80%</span></div>
+          <div class="skill-track"><div class="skill-fill"></div></div>
+        </div>
+        <div class="skill-row" data-level="75">
+          <div class="top"><span>JavaScript / TypeScript</span><span>75%</span></div>
+          <div class="skill-track"><div class="skill-fill"></div></div>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <h3>Backend</h3>
+        <div class="skill-row" data-level="75">
+          <div class="top"><span>Node.js / API Design</span><span>75%</span></div>
+          <div class="skill-track"><div class="skill-fill"></div></div>
+        </div>
+        <div class="skill-row" data-level="70">
+          <div class="top"><span>Supabase / PostgreSQL</span><span>70%</span></div>
+          <div class="skill-track"><div class="skill-fill"></div></div>
+        </div>
+        <div class="skill-row" data-level="60">
+          <div class="top"><span>Autentikasi & Keamanan</span><span>60%</span></div>
+          <div class="skill-track"><div class="skill-fill"></div></div>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <h3>AI & Data</h3>
+        <div class="skill-row" data-level="65">
+          <div class="top"><span>Integrasi LLM / API AI</span><span>65%</span></div>
+          <div class="skill-track"><div class="skill-fill"></div></div>
+        </div>
+        <div class="skill-row" data-level="55">
+          <div class="top"><span>Prompt Engineering</span><span>55%</span></div>
+          <div class="skill-track"><div class="skill-fill"></div></div>
+        </div>
+        <div class="skill-row" data-level="50">
+          <div class="top"><span>Dasar Machine Learning</span><span>50%</span></div>
+          <div class="skill-track"><div class="skill-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack-tags">
+      <span>JavaScript</span><span>TypeScript</span><span>React</span><span>Next.js</span>
+      <span>Node.js</span><span>Supabase</span><span>PostgreSQL</span><span>Tailwind CSS</span>
+      <span>Git</span><span>OpenAI API</span><span>Vercel</span>
+    </div>
+  </section>
+
+  <!-- ============ PENGALAMAN / PROYEK ============ -->
+  <section id="proyek" class="reveal">
+    <p class="eyebrow">Pengalaman & Proyek</p>
+    <h2 class="section-title">Karya yang sedang dan pernah dikerjakan.</h2>
+
+    <div class="project-grid">
+      <div class="project">
+        <div class="p-thumb">
+          <span class="p-year">2026</span>
+          <img src="proyek-webtoprint.jpg" alt="Tangkapan layar Platform Web-to-Print + AI"
+               onerror="this.src='https://placehold.co/640x400/1c1b19/faf9f6?text=Web-to-Print+%2B+AI'">
+        </div>
+        <div class="p-body">
+          <h3>Platform Web-to-Print + AI</h3>
+          <p>Platform cetak-on-demand dengan generative AI image (OpenAI/DALL·E),
+             editor desain berbasis browser, penentuan harga otomatis, dan checkout
+             via WhatsApp — dirancang dari perspektif pengguna maupun admin.</p>
+          <div class="p-stack"><span>Next.js</span><span>OpenAI API</span><span>Supabase</span></div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="p-thumb">
+          <span class="p-year">2026</span>
+          <img src="proyek-portofolio.jpg" alt="Tangkapan layar Website Portofolio Pribadi"
+               onerror="this.src='https://placehold.co/640x400/1c1b19/faf9f6?text=Portofolio+Pribadi'">
+        </div>
+        <div class="p-body">
+          <h3>Portofolio Pribadi</h3>
+          <p>Website portofolio fullstack dengan panel admin tanpa kode, dibangun
+             dari nol dan di-deploy secara mandiri ke Vercel.</p>
+          <div class="p-stack"><span>Next.js</span><span>Supabase</span><span>Tailwind</span></div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="p-thumb">
+          <span class="p-year">2025 — 2026</span>
+          <img src="proyek-ai.jpg" alt="Tangkapan layar Eksperimen Integrasi AI"
+               onerror="this.src='https://placehold.co/640x400/1c1b19/faf9f6?text=Eksperimen+AI'">
+        </div>
+        <div class="p-body">
+          <h3>Eksperimen Integrasi AI</h3>
+          <p>Serangkaian proyek kecil untuk menguji integrasi API AI ke dalam
+             aplikasi web — mulai dari pembuatan konten otomatis sampai fitur
+             rekomendasi sederhana.</p>
+          <div class="p-stack"><span>JavaScript</span><span>OpenAI API</span></div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="p-thumb">
+          <span class="p-year">[Tahun]</span>
+          <img src="proyek-lainnya.jpg" alt="Tangkapan layar [Judul Proyek Lainnya]"
+               onerror="this.src='https://placehold.co/640x400/1c1b19/faf9f6?text=Proyek+Lainnya'">
+        </div>
+        <div class="p-body">
+          <h3>[Judul Proyek Lainnya]</h3>
+          <p>[Deskripsi singkat proyek — ganti dengan proyek lain yang ingin
+             ditampilkan.]</p>
+          <div class="p-stack"><span>[Tech Stack]</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KONTAK ============ -->
+  <section id="kontak" class="reveal">
+    <p class="eyebrow">Kontak</p>
+    <div class="contact-wrap">
+      <div>
+        <h2>Mari membangun sesuatu.</h2>
+        <p>Terbuka untuk kolaborasi proyek web, eksperimen AI, atau sekadar
+           bertukar ide teknis. Silakan hubungi lewat email atau media sosial
+           di samping.</p>
+        <button class="email-copy" id="copyEmailBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="3" y="5" width="18" height="14" rx="1.5"/>
+            <path d="M3 6.5l9 6.5 9-6.5"/>
+          </svg>
+          <span id="emailText">achmadfadhilithisom@gmail.com</span>
+        </button>
+        <div class="copy-note" id="copyNote">$ email disalin ke clipboard</div>
+      </div>
+
+      <ul class="social-list">
+        <li>
+          <a href="https://github.com/fdhil273" target="_blank" rel="noopener">
+            GitHub
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/achmad-fadhil-ithisom/" target="_blank" rel="noopener">
+            LinkedIn
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://instagram.com/fadhil273" target="_blank" rel="noopener">
+            Instagram
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="mailto:achmadfadhilithisom.gmail.com">
+            Email
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mono">© 2026 [Nama Lengkap]</span>
+    <span class="mono">Dibuat dengan HTML, CSS & JavaScript.</span>
+  </footer>
+
+</main>
+
+<script>
+  // ---- mobile nav toggle ----
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('open');
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      burger.classList.remove('open');
+      navLinks.classList.remove('open');
+    });
+  });
+
+  // ---- active link on scroll (scroll-spy) ----
+  const sections = document.querySelectorAll('main section, #home');
+  const navItems = document.querySelectorAll('.nav-link');
+
+  const spyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navItems.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+
+  sections.forEach(sec => spyObserver.observe(sec));
+
+  // ---- reveal on scroll ----
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ---- animate skill bars once visible ----
+  const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const fill = entry.target.querySelector('.skill-fill');
+        const level = entry.target.getAttribute('data-level');
+        fill.style.width = level + '%';
+        skillObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  document.querySelectorAll('.skill-row').forEach(row => skillObserver.observe(row));
+
+  // ---- copy email to clipboard ----
+  const copyBtn = document.getElementById('copyEmailBtn');
+  const copyNote = document.getElementById('copyNote');
+  copyBtn.addEventListener('click', async () => {
+    const email = document.getElementById('emailText').textContent;
+    try {
+      await navigator.clipboard.writeText(email);
+    } catch (e) {
+      // clipboard API unavailable — fail silently, note still confirms intent
+    }
+    copyNote.classList.add('show');
+    clearTimeout(window.__copyTimeout);
+    window.__copyTimeout = setTimeout(() => copyNote.classList.remove('show'), 2200);
+  });
+</script>
+
+</body>
+</html>
